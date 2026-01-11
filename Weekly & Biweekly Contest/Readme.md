@@ -1,6 +1,7 @@
 ## Weekly Contest & Biweekly Contest - ✅✅
 
-![Weekly & Biweekly Contest](LeetcodeContests.png)
+![LeetCode Contests](Leetcode Contests.png)
+
 
 
 
