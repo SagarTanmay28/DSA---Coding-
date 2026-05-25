@@ -1,7 +1,11 @@
 class Solution {
 public:
     vector<vector<int>> verticalTraversal(TreeNode* root) {
+        // 1. map sorts columns
+        // 2. inner map sorts rows
+        // 3. multiset sorts values at same position
 
+        //column -> row -> sorted values
         map<int, map<int, multiset<int>>> mp;
 
         // queue 
@@ -45,4 +49,5 @@ public:
         
         return ans;
     }
+};
 };
