@@ -53,6 +53,35 @@ public:
     }
 };
 
+// More Clean 
+class Solution {
+public:
+
+    void dfs(TreeNode* root, vector<int>& ans, int level){
+
+        if(root == NULL) return;
+
+        // first node visited at this level
+        if(level == ans.size()){
+            ans.push_back(root->val);
+        }
+
+        // go right first
+        dfs(root->right, ans, level + 1);
+
+        // then left
+        dfs(root->left, ans, level + 1);
+    }
+
+    vector<int> rightSideView(TreeNode* root) {
+
+        vector<int> ans;
+
+        dfs(root, ans, 0);
+
+        return ans;
+    }
+};
 
 // BFS 
 class Solution {
