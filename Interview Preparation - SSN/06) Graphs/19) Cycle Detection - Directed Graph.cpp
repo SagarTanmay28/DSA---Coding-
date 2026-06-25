@@ -1,3 +1,5 @@
+// BFS 
+
 class Solution {
   public:
     bool isCyclic(int n, vector<vector<int>> &edges) {
@@ -34,5 +36,59 @@ class Solution {
         }
         
         return count < n;
+    }
+};
+
+
+// DFS 
+
+class Solution {
+public:
+    bool ans = true; // true means no cycle
+
+    void dfs(int node, vector<vector<int>>& adj,
+             vector<bool>& vis, vector<bool>& path) {
+
+        vis[node] = true;
+        path[node] = true;
+
+        for (int neigh : adj[node]) {
+
+            // Cycle found
+            if (path[neigh]) {
+                ans = false;
+                return;
+            }
+
+            // Visit unvisited node
+            if (!vis[neigh]) {
+                dfs(neigh, adj, vis, path);
+            }
+        }
+
+        path[node] = false;
+    }
+
+    bool isCyclic(int n, vector<vector<int>>& pre) {
+
+        vector<vector<int>> adj(n);
+
+        // b -> a edge
+        for (auto &p : pre) {
+            int a = p[0];
+            int b = p[1];
+            adj[b].push_back(a);
+        }
+
+        vector<bool> vis(n, false);
+        vector<bool> path(n, false);
+
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                dfs(i, adj, vis, path);
+            }
+        }
+
+        return ans;
     }
 };
