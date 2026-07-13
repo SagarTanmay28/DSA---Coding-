@@ -2,7 +2,7 @@ You are given an m x n binary matrix grid, where 0 represents a sea cell and 1 r
 
 A move consists of walking from one land cell to another adjacent (4-directionally) land cell or walking off the boundary of the grid.
 
-Return the number of land cells in grid for which we cannot walk off the boundary of the grid in any number of moves.
+Return the number of land cells in grid for which we cannot walk off the boundary of the g rid in any number of moves.
 
  
 
