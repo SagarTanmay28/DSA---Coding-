@@ -57,3 +57,78 @@ public:
         return sum;
     }
 };
+
+
+// Q. Print MST Edges
+
+class Solution {
+public:
+
+    int spanningTree(int V, vector<vector<int>>& edges) {
+
+        // adjacency list
+        vector<vector<pair<int,int>>> adj(V);
+
+        for (auto it : edges) {
+
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+
+            adj[u].push_back({v, wt});
+            adj[v].push_back({u, wt});
+        }
+
+        // {weight, node, parent}
+        priority_queue<vector<int>,
+                       vector<vector<int>>,
+                       greater<vector<int>>> pq;
+
+        vector<bool> vis(V, false);
+
+        pq.push({0, 0, -1});
+
+        int sum = 0;
+
+        vector<pair<int,int>> mstEdges;
+
+        while (!pq.empty()) {
+
+            auto top = pq.top();
+            pq.pop();
+
+            int wt = top[0];
+            int node = top[1];
+            int parent = top[2];
+
+            if (vis[node] == true)
+                continue;
+
+            vis[node] = true;
+
+            sum += wt;
+
+            if (parent != -1)
+                mstEdges.push_back({parent, node});
+
+            for (auto it : adj[node]) {
+
+                int adjNode = it.first;
+                int edgeWt = it.second;
+
+                if (vis[adjNode] == false) {
+
+                    pq.push({edgeWt, adjNode, node});
+                }
+            }
+        }
+
+        // Print MST edges
+        cout << "MST Edges:\n";
+        for (auto it : mstEdges) {
+            cout << it.first << " - " << it.second << "\n";
+        }
+
+        return sum;
+    }
+};
