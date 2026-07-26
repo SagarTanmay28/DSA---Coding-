@@ -2,39 +2,37 @@ class Solution {
 public:
     int countSubstrings(string s) {
         int n = s.size();
+
+        vector<vector<bool>> dp(n+1,vector<bool>(n+1,false));
         int count = 0;
-
-        vector<vector<int>> dp(n,vector<int>(n,0));
-
-        // is Palindrome 
-        for(int k=0;k<n;k++){
-            int i = 0, j = k;
-
-            while(j < n){
-                // length = 1
-                if(i == j){
-                    dp[i][j] = 1;
-                    count++;
-                }
-                // length = 2
-                else if(j-i+1 == 2 && s[i] == s[j]){
-                    dp[i][j] = 1;
-                    count++;
-                }
-                // length > 2
-                else{
-                    if(s[i] == s[j] && dp[i+1][j-1] == 1){
-                        dp[i][j] = 1;
-                        count++;
-                    }
-                }
-
-                i++;
-                j++;
-                
+        
+        // len = 1
+        for(int i=0;i<n;i++){
+            dp[i][i] = true;
+            count++;
+        }
+        // len = 2
+        for(int i=0;i<n-1;i++){
+            if(s[i] == s[i+1]){
+                dp[i][i+1] = true;
+                count++;
             }
         }
-
+        // len >= 3
+        for(int len = 3; len <= n; len++){
+            for(int i=0; i < n - len + 1; i++){
+                int j = i + len - 1; 
+                // j < n
+                // i + len - 1 < n 
+                // i < n - len + 1
+                if(s[i] == s[j] && dp[i+1][j-1] == true){
+                    dp[i][j] = true;
+                    count++;
+                }
+            }
+        }
+        
         return count;
+        
     }
 };
