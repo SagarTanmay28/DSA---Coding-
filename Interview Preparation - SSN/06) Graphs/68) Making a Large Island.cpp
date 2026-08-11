@@ -26,97 +26,120 @@ Explanation: Can't change any 0 to 1, only one island with area = 4.
 
 class Solution {
 public:
-    vector<int> parent, Size;
 
-    int find(int x) {
-        if (parent[x] == x)
-            return x;
-        return parent[x] = find(parent[x]);
-    }
+    vector<vector<int>> directions = {
+        {-1, 0},
+        {1, 0},
+        {0, 1},
+        {0, -1}
+    };
 
-    void Union(int x, int y) {
-        int px = find(x);
-        int py = find(y);
+    int n;
 
-        if (px == py)
-            return;
+    int bfs(int row, int col, vector<vector<int>>& grid, int id) {
 
-        if (Size[px] < Size[py])
-            swap(px, py);
+        queue<pair<int, int>> q;
+        q.push({row, col});
 
-        parent[py] = px;
-        Size[px] += Size[py];
+        grid[row][col] = id;
+
+        int size = 0;
+
+        while (q.size()) {
+
+            auto front = q.front();
+            q.pop();
+
+            int i = front.first;
+            int j = front.second;
+
+            size++;
+
+            for (auto dir : directions) {
+
+                int newRow = i + dir[0];
+                int newCol = j + dir[1];
+
+                if (newRow >= 0 && newRow < n &&
+                    newCol >= 0 && newCol < n &&
+                    grid[newRow][newCol] == 1) {
+
+                    grid[newRow][newCol] = id;
+
+                    q.push({newRow, newCol});
+                }
+            }
+        }
+
+        return size;
     }
 
     int largestIsland(vector<vector<int>>& grid) {
 
-        int n = grid.size();
+        n = grid.size();
 
-        parent.resize(n * n);
-        Size.assign(n * n, 1);
+        // island id -> island size
+        unordered_map<int, int> islandSize;
 
-        for (int i = 0; i < n * n; i++)
-            parent[i] = i;
+        int id = 2;
 
-        vector<pair<int,int>> dir = {{-1,0},{1,0},{0,-1},{0,1}};
-
-        // Build islands
+        // Find all islands
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
 
-                if (grid[i][j] == 0)
-                    continue;
+                if (grid[i][j] == 1) {
 
-                int node = i * n + j;
+                    int size = bfs(i, j, grid, id);
 
-                for (auto &d : dir) {
-                    int ni = i + d.first;
-                    int nj = j + d.second;
+                    islandSize[id] = size;
 
-                    if (ni >= 0 && nj >= 0 && ni < n && nj < n &&
-                        grid[ni][nj] == 1) {
-
-                        int adj = ni * n + nj;
-                        Union(node, adj);
-                    }
+                    id++;
                 }
             }
         }
 
         int ans = 0;
 
-        // Try flipping every 0
+        // Case: don't change any 0
+        for (auto it : islandSize) {
+            ans = max(ans, it.second);
+        }
+
+        // Try changing every 0 to 1
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
 
-                if (grid[i][j] == 1)
+                if (grid[i][j] != 0)
                     continue;
 
-                unordered_set<int> st;
-                int curr = 1;
+                int size = 1;
 
-                for (auto &d : dir) {
+                // Store unique island IDs
+                unordered_set<int> seen;
 
-                    int ni = i + d.first;
-                    int nj = j + d.second;
+                for (auto dir : directions) {
 
-                    if (ni >= 0 && nj >= 0 && ni < n && nj < n &&
-                        grid[ni][nj] == 1) {
+                    int newRow = i + dir[0];
+                    int newCol = j + dir[1];
 
-                        int root = find(ni * n + nj);
+                    if (newRow >= 0 && newRow < n &&
+                        newCol >= 0 && newCol < n &&
+                        grid[newRow][newCol] > 1) {
 
-                        if (st.insert(root).second)
-                            curr += Size[root];
+                        int id = grid[newRow][newCol];
+
+                        if (seen.find(id) == seen.end()) {
+
+                            seen.insert(id);
+
+                            size += islandSize[id];
+                        }
                     }
                 }
 
-                ans = max(ans, curr);
+                ans = max(ans, size);
             }
         }
-
-        // Handle all-1 grid
-        for (int i = 0; i < n * n; i++)
-            ans = max(ans, Size[find(i)]);
 
         return ans;
     }
