@@ -1,5 +1,5 @@
 
-# Stack & Monotonic Stack — LeetCode Problem Set
+# Stack & Monotonic Stack — LeetCode Problem Set - 29 Problems 
 
 A curated, pattern-wise collection of Stack-based LeetCode problems with problem statements, examples, intuition, and complete C++ solutions.
 
